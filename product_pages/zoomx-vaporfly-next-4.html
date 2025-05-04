@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZOOMX VAPORFLY NEXT 4 - Shoe Store</title>
+    <link rel="stylesheet" href="../homepagestyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .product-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .cart-icon, .favorites-icon {
+            position: relative;
+        }
+        .cart-count, .favorites-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 20px;
+        }
+        .product-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .product-meta {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .product-price {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .add-to-cart-btn, .favorite-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .add-to-cart-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            flex: 1;
+        }
+        .add-to-cart-btn:hover {
+            background: #0056b3;
+        }
+        .favorite-btn {
+            background: white;
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .favorite-btn.active {
+            background: #ff4444;
+            color: white;
+        }
+        .reviews-section {
+            margin-top: 40px;
+            grid-column: 1 / -1;
+        }
+        .review-form {
+            margin-bottom: 30px;
+        }
+        .star-rating {
+            font-size: 24px;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        .star-rating i {
+            cursor: pointer;
+        }
+        .review-list {
+            list-style: none;
+            padding: 0;
+        }
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .review-stars {
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        .review-text {
+            margin: 10px 0;
+        }
+        .review-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .size-selector, .colorway-selector {
+            margin-bottom: 25px;
+        }
+        
+        .size-selector label, .colorway-selector label {
+            display: block;
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .size-options, .color-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        
+        .size-btn {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 70px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .size-btn:hover {
+            border-color: #111;
+        }
+        
+        .size-btn.selected {
+            background: #111;
+            color: white;
+            border-color: #111;
+        }
+        
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-btn.selected {
+            border: 2px solid #111;
+        }
+        
+        .color-btn .color-name {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            white-space: nowrap;
+            color: #666;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .color-btn:hover .color-name {
+            opacity: 1;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0 30px 0;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #666;
+            font-size: 1.2em;
+        }
+        .product-price {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff4444;
+        }
+        .discount {
+            background: #ff4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            width: fit-content;
+            margin-right: 15px;
+            height: 40px;
+        }
+        
+        .quantity-selector button {
+            background: #f5f5f5;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+            font-size: 1.2em;
+            height: 100%;
+            transition: background 0.3s ease;
+        }
+        
+        .quantity-selector button:hover {
+            background: #e0e0e0;
+        }
+        
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            padding: 0;
+            font-size: 1em;
+            height: 100%;
+        }
+        
+        .quantity-selector input::-webkit-inner-spin-button,
+        .quantity-selector input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Notification Styles */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .alert {
+            padding: 15px 25px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            transform: translateX(120%);
+            animation: slideIn 0.5s forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 300px;
+        }
+
+        .alert i {
+            font-size: 1.2em;
+        }
+
+        .alert.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .alert.error {
+            background: linear-gradient(135deg, #dc3545, #ff4444);
+        }
+
+        .alert.warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        .alert.fade-out {
+            animation: fadeOut 0.5s forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="../index.html"><img src="../logo.png" alt="Logo"></a>
+        </div>
+        <nav class="nav-links">
+            <a href="../homepage.html">Home</a>
+            <a href="../cart.html" class="cart-icon">Cart 🛒<span class="cart-count">0</span></a>
+            <a href="../favorites.html" class="favorites-icon">Favorites ❤️<span class="favorites-count">0</span></a>
+            <a href="../profile.html">Profile 👤</a>
+        </nav>
+    </header>
+
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <div class="product-container">
+        <div class="product-image">
+            <img src="../shoes/ZOOMX VAPORFLY NEXT 4_converted.jpg" alt="ZOOMX VAPORFLY NEXT 4">
+        </div>
+        <div class="product-info">
+            <h1 class="product-title">ZOOMX VAPORFLY NEXT 4</h1>
+            <div class="product-meta">
+                <span class="brand">Brand: Generic</span> | 
+                <span class="style">Style: Sneaker</span>
+            </div>
+            <p class="product-description">A stylish Generic Sneaker shoe.</p>
+            <div class="price-container">
+                <span class="original-price">₱3,911.00</span>
+                <span class="product-price">₱3,259.00</span>
+                <span class="discount">-17%</span>
+            </div>
+            
+            <!-- Colorway Selector -->
+            <div class="colorway-selector">
+                <label>Select Color:</label>
+                <div class="color-options">
+                    <button class="color-btn" data-color="beige" style="background-color: #f5f5dc;">
+                        <span class="color-name">Beige</span>
+                    </button>
+                    <button class="color-btn" data-color="black" style="background-color: #000;">
+                        <span class="color-name">Black</span>
+                    </button>
+                    <button class="color-btn" data-color="red" style="background-color: #ff4444;">
+                        <span class="color-name">Red</span>
+                    </button>
+                </div>
+                <div class="error-message" id="colorError">Please select a color</div>
+            </div>
+
+            <!-- Size Selector -->
+            <div class="size-selector">
+                <label>Select Size:</label>
+                <div class="size-options">
+                    <button class="size-btn" data-size="6">US 6</button>
+                    <button class="size-btn" data-size="7">US 7</button>
+                    <button class="size-btn" data-size="8">US 8</button>
+                    <button class="size-btn" data-size="9">US 9</button>
+                    <button class="size-btn" data-size="10">US 10</button>
+                    <button class="size-btn" data-size="11">US 11</button>
+                    <button class="size-btn" data-size="12">US 12</button>
+                </div>
+                <div class="error-message" id="sizeError">Please select a size</div>
+            </div>
+
+            <div class="action-buttons">
+                <div class="quantity-selector">
+                    <button onclick="updateQuantity(-1)">−</button>
+                    <input type="number" id="quantity" value="1" min="1" max="10" onchange="validateQuantity(this)">
+                    <button onclick="updateQuantity(1)">+</button>
+                </div>
+                <button class="add-to-cart-btn">
+                    Add to Cart
+                </button>
+                <button class="favorite-btn">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            <div id="successMessage" class="success-message"></div>
+        </div>
+
+        <div class="reviews-section">
+            <h2>Reviews</h2>
+            <div class="review-form">
+                <div class="star-rating" id="starRating">
+                    <i class="far fa-star" data-rating="1"></i>
+                    <i class="far fa-star" data-rating="2"></i>
+                    <i class="far fa-star" data-rating="3"></i>
+                    <i class="far fa-star" data-rating="4"></i>
+                    <i class="far fa-star" data-rating="5"></i>
+                </div>
+                <textarea id="reviewText" placeholder="Write your review..." rows="4" style="width: 100%; margin-bottom: 10px; padding: 10px;"></textarea>
+                <button onclick="submitReview()" class="add-to-cart-btn" style="width: auto;">Submit Review</button>
+            </div>
+            <ul class="review-list" id="reviewList"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Product data
+        const product = {
+            id: 'zoomx-vaporfly-next-4',
+            name: 'ZOOMX VAPORFLY NEXT 4',
+            price: 3259,
+            image: 'shoes/ZOOMX VAPORFLY NEXT 4_converted.jpg',
+            brand: 'Generic',
+            style: 'Sneaker'
+        };
+
+        let selectedSize = null;
+        let selectedColor = null;
+
+        // Quantity functions
+        function updateQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let newValue = parseInt(quantityInput.value) + change;
+            newValue = Math.max(1, Math.min(10, newValue));
+            quantityInput.value = newValue;
+        }
+
+        function validateQuantity(input) {
+            let value = parseInt(input.value);
+            if (isNaN(value) || value < 1) {
+                input.value = 1;
+            } else if (value > 10) {
+                input.value = 10;
+            }
+        }
+
+        // Cart functions
+        function addToCart() {
+            let hasError = false;
+
+            if (!selectedSize) {
+                showNotification('Please select a size', 'warning');
+                document.getElementById('sizeError').style.display = 'block';
+                hasError = true;
+            }
+
+            if (!selectedColor) {
+                showNotification('Please select a color', 'warning');
+                document.getElementById('colorError').style.display = 'block';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            const cartItem = {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: quantity,
+                size: selectedSize,
+                color: selectedColor
+            };
+
+            const existingItemIndex = cart.findIndex(item => 
+                item.id === product.id && 
+                item.size === selectedSize && 
+                item.color === selectedColor
+            );
+
+            if (existingItemIndex !== -1) {
+                const newQuantity = cart[existingItemIndex].quantity + quantity;
+                if (newQuantity <= 10) {
+                    cart[existingItemIndex].quantity = newQuantity;
+                    showNotification('Updated quantity in cart!', 'success');
+                } else {
+                    showNotification('Maximum quantity limit reached (10 items)', 'error');
+                    return;
+                }
+            } else {
+                cart.push(cartItem);
+                showNotification('Added to cart successfully!', 'success');
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        // Favorites functions
+        function toggleFavorite() {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            const favoriteBtn = document.querySelector('.favorite-btn');
+            
+            const index = favorites.findIndex(f => f.id === product.id);
+            if (index === -1) {
+                favorites.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    brand: product.brand,
+                    style: product.style
+                });
+                favoriteBtn.classList.add('active');
+                showNotification('Added to favorites!', 'success');
+            } else {
+                favorites.splice(index, 1);
+                favoriteBtn.classList.remove('active');
+                showNotification('Removed from favorites!', 'warning');
+            }
+            
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavoritesCount();
+        }
+
+        function checkFavoriteStatus() {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            const isFavorite = favorites.some(f => f.id === product.id);
+            if (isFavorite) {
+                document.querySelector('.favorite-btn').classList.add('active');
+            }
+        }
+
+        // Update counts in navbar
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        function updateFavoritesCount() {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            document.querySelector('.favorites-count').textContent = favorites.length;
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize the page
+            checkFavoriteStatus();
+            updateCartCount();
+            updateFavoritesCount();
+
+            // Add event listeners
+            document.querySelector('.add-to-cart-btn').addEventListener('click', addToCart);
+            document.querySelector('.favorite-btn').addEventListener('click', toggleFavorite);
+
+            // Initialize size and color selectors
+            const sizeBtns = document.querySelectorAll('.size-btn');
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    sizeBtns.forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedSize = this.dataset.size;
+                    document.getElementById('sizeError').style.display = 'none';
+                });
+            });
+
+            const colorBtns = document.querySelectorAll('.color-btn');
+            colorBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    colorBtns.forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedColor = this.dataset.color;
+                    document.getElementById('colorError').style.display = 'none';
+                });
+            });
+        });
+
+        // Reviews functionality
+        let currentRating = 0;
+        const stars = document.querySelectorAll('.star-rating i');
+        
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const rating = this.dataset.rating;
+                updateStars(rating);
+            });
+            
+            star.addEventListener('mouseout', function() {
+                updateStars(currentRating);
+            });
+            
+            star.addEventListener('click', function() {
+                currentRating = this.dataset.rating;
+                updateStars(currentRating);
+            });
+        });
+
+        function updateStars(rating) {
+            stars.forEach(star => {
+                const starRating = star.dataset.rating;
+                if (starRating <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        function submitReview() {
+            if (currentRating === 0) {
+                showMessage('Please select a rating!', 'error');
+                return;
+            }
+
+            const reviewText = document.getElementById('reviewText').value.trim();
+            if (!reviewText) {
+                showMessage('Please write a review!', 'error');
+                return;
+            }
+
+            const reviews = JSON.parse(localStorage.getItem(`reviews_${product.slug}`) || '[]');
+            reviews.push({
+                rating: currentRating,
+                text: reviewText,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem(`reviews_${product.slug}`, JSON.stringify(reviews));
+
+            // Reset form
+            currentRating = 0;
+            updateStars(0);
+            document.getElementById('reviewText').value = '';
+            
+            showMessage('Review submitted successfully!');
+            loadReviews();
+        }
+
+        function loadReviews() {
+            const reviews = JSON.parse(localStorage.getItem(`reviews_${product.slug}`) || '[]');
+            const reviewList = document.getElementById('reviewList');
+            
+            reviewList.innerHTML = reviews.map(review => `
+                <li class="review-item">
+                    <div class="review-stars">
+                        ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+                    </div>
+                    <div class="review-text">${review.text}</div>
+                    <div class="review-date">${new Date(review.date).toLocaleDateString()}</div>
+                </li>
+            `).join('');
+        }
+
+        function showMessage(message, type = 'success') {
+            const messageElement = document.getElementById('successMessage');
+            messageElement.textContent = message;
+            messageElement.style.display = 'block';
+            messageElement.style.backgroundColor = type === 'success' ? '#4CAF50' : '#ff4444';
+            
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000);
+        }
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const alert = document.createElement('div');
+            alert.className = 'alert ' + type;
+            
+            let icon = '';
+            switch(type) {
+                case 'success':
+                    icon = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'error':
+                    icon = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                case 'warning':
+                    icon = '<i class="fas fa-exclamation-triangle"></i>';
+                    break;
+            }
+            
+            alert.innerHTML = icon + '<span>' + message + '</span>';
+            container.appendChild(alert);
+
+            // Remove the notification after 3 seconds with fade out animation
+            setTimeout(() => {
+                alert.classList.add('fade-out');
+                setTimeout(() => {
+                    container.removeChild(alert);
+                }, 500);
+            }, 3000);
+        }
+
+        // Modified initialization
+        function initialize() {
+            checkFavoriteStatus();
+            loadReviews();
+            updateCartCount();
+            updateFavoritesCount();
+        }
+
+        // Initialize
+        initialize();
+    </script>
+</body>
+</html>
