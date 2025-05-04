@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>Homepage</title>
+    <link rel="stylesheet" href="homepagestyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .cart-icon, .favorites-icon {
+            position: relative;
+        }
+        .cart-count, .favorites-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: #4f46e5;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .suggestion-item:hover {
+            background: #f8f9fa;
+        }
+        .suggestion-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .suggestion-item div {
+            flex: 1;
+        }
+        .suggestion-item strong {
+            display: block;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        .suggestion-item p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .profile-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .profile-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        .profile-dropdown:hover .profile-dropdown-content {
+            display: block;
+        }
+        .profile-dropdown-item {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.2s ease;
+        }
+        .profile-dropdown-item:hover {
+            background: #f8f9fa;
+        }
+        .profile-dropdown-item i {
+            margin-right: 10px;
+        }
+        .profile-dropdown-divider {
+            height: 1px;
+            background: #ddd;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="logo.png" alt="Kustomize"></a>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search products...">
+            <div class="suggestions" id="searchSuggestions"></div>
+        </div>
+        <nav class="nav-links">
+            <a href="homepage.html">Home</a>
+            <a href="cart.html" class="cart-icon">Cart <i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></a>
+            <a href="favorites.html" class="favorites-icon">Favorites <i class="fas fa-heart"></i><span class="favorites-count">0</span></a>
+            <div class="profile-dropdown">
+                <a href="#" class="profile">Profile <i class="fas fa-user"></i></a>
+                <div class="profile-dropdown-content">
+                    <a href="profile.html" class="profile-dropdown-item">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                    <a href="cart.html" class="profile-dropdown-item">
+                        <i class="fas fa-shopping-bag"></i> My Orders
+                    </a>
+                    <div class="profile-dropdown-divider"></div>
+                    <a href="#" class="profile-dropdown-item logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar" id="sidebar">
+            <div class="filter-section">
+                <h3>Category</h3>
+                <ul class="filter-list" id="categoryFilters">
+                    <!-- Categories will be loaded here -->
+                </ul>
+            </div>
+            <div class="filter-section">
+                <h3>Price</h3>
+                <label for="priceRange">Max Price: <span id="priceValue">₱50,000.00</span></label>
+                <input type="range" id="priceRange" min="0" max="50000" step="100" value="50000">
+            </div>
+            <div class="filter-section">
+                <h3>Brand</h3>
+                <ul class="filter-list" id="brandFilters">
+                    <!-- Brands will be loaded here -->
+                </ul>
+            </div>
+            <div class="filter-section">
+                <h3>Style</h3>
+                <ul class="filter-list" id="styleFilters">
+                    <!-- Styles will be loaded here -->
+                </ul>
+            </div>
+            <button id="resetFiltersBtn" class="btn btn-secondary" style="margin-top:16px;">Reset Filters</button>
+        </aside>
+
+        <!-- Product Grid -->
+        <main class="main-content">
+            <div class="sort-controls">
+                <select id="sortSelect" class="sort-select">
+                    <option value="">Sort By</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="name_asc">Name: A to Z</option>
+                    <option value="name_desc">Name: Z to A</option>
+                    <option value="newest">Newest First</option>
+                </select>
+            </div>
+            <div class="product-list" id="productList">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- FAQ Chatbot -->
+    <button class="faq-button" id="faqButton">
+        <i class="fas fa-question"></i>
+    </button>
+    
+    <div id="chatDialog">
+        <div class="chat-header">
+            <h3>Frequently Asked Questions</h3>
+            <button id="closeChatBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatContainer" class="chat-box">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="userInput" placeholder="Type your question here...">
+            <button id="sendBtn" class="chat-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="navbarState.js"></script>
+    <script src="search.js"></script>
+    <script src="homepagefunctions.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+        // Add logout function
+        function logout() {
+            // Clear any user data from localStorage
+            localStorage.removeItem('user');
+            localStorage.removeItem('cart');
+            localStorage.removeItem('favorites');
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('faqButton').addEventListener('click', function() {
+            const chatDialog = document.getElementById('chatDialog');
+            chatDialog.style.display = 'flex';
+            // Add initial bot message
+            const chatContainer = document.getElementById('chatContainer');
+            if (chatContainer.children.length === 0) {
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'chat-message bot';
+                welcomeMessage.textContent = 'Hello! How can I help you today? You can ask me about our products, shipping, returns, or any other questions you might have.';
+                chatContainer.appendChild(welcomeMessage);
+            }
+        });
+
+        document.getElementById('closeChatBtn').addEventListener('click', function() {
+            const chatDialog = document.getElementById('chatDialog');
+            chatDialog.style.display = 'none';
+        });
+
+        // Update cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        // Update favorites count
+        function updateFavoritesCount() {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            document.querySelector('.favorites-count').textContent = favorites.length;
+        }
+
+        // Initialize counts
+        updateCartCount();
+        updateFavoritesCount();
+    </script>
+</body>
+</html>

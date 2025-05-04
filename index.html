@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Kustomize - Your Premium Shoe Store</title>
+    <link rel="stylesheet" href="homepagestyles.css">
+    <link rel="stylesheet" href="landingpage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="logo.png" alt="Kustomize"></a>
+        </div>
+        <nav class="nav-links">
+            <a href="homepage.html">Shop</a>
+            <a href="cart.html" class="cart-icon">Cart <i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></a>
+            <a href="favorites.html" class="favorites-icon">Favorites <i class="fas fa-heart"></i><span class="favorites-count">0</span></a>
+            <div class="profile-dropdown">
+                <a href="#" class="profile">Profile <i class="fas fa-user"></i></a>
+                <div class="profile-dropdown-content">
+                    <a href="profile.html" class="profile-dropdown-item">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                    <a href="cart.html" class="profile-dropdown-item">
+                        <i class="fas fa-shopping-bag"></i> My Orders
+                    </a>
+                    <div class="profile-dropdown-divider"></div>
+                    <a href="#" class="profile-dropdown-item logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Video -->
+    <section class="hero-section">
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source src="jordanVideo.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>Step into Style with Kustomize</h1>
+            <p>Discover our exclusive collection of premium footwear. From classic designs to the latest trends, find your perfect pair today.</p>
+            <a href="homepage.html" class="cta-button">Explore Collection</a>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="featured-section">
+        <div class="featured-header">
+            <h2>Featured Collections</h2>
+            <p>Explore our most popular and latest releases</p>
+        </div>
+        <div class="featured-grid">
+            <div class="featured-card" data-category="Jordan">
+                <img src="jordanCollection.jpg" alt="Jordan Collection">
+                <div class="featured-overlay">
+                    <h3>Jordan Collection</h3>
+                    <p>Iconic designs for legendary performance</p>
+                </div>
+            </div>
+            <div class="featured-card" data-category="Nike">
+                <img src="nikeLifestyle.webp" alt="Nike Lifestyle">
+                <div class="featured-overlay">
+                    <h3>Nike Lifestyle</h3>
+                    <p>Comfort meets style in everyday wear</p>
+                </div>
+            </div>
+            <div class="featured-card" data-category="Limited">
+                <img src="shoeLanding.jpg" alt="Limited Edition">
+                <div class="featured-overlay">
+                    <h3>Limited Edition</h3>
+                    <p>Exclusive releases you won't want to miss</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-shipping-fast"></i>
+                <h3>Fast Delivery</h3>
+                <p>Quick and reliable shipping to your doorstep</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-medal"></i>
+                <h3>Premium Quality</h3>
+                <p>Authentic products from top brands</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-tags"></i>
+                <h3>Best Prices</h3>
+                <p>Competitive prices and regular discounts</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Always here to help you</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="about-content">
+            <div class="about-header">
+                <h2>About Kustomize</h2>
+            </div>
+            <div class="about-description">
+                <p>Founded in 2025, Kustomize is more than just a shoe store – we're a destination for footwear enthusiasts who appreciate quality, style, and authenticity. Our mission is to provide sneaker lovers with access to the most coveted and exclusive shoe collections while ensuring an exceptional shopping experience.</p>
+                <p>We take pride in offering 100% authentic products from the world's leading brands, with a carefully curated selection that caters to every style and preference. Whether you're a seasoned collector or looking for your next everyday pair, Kustomize is your trusted destination.</p>
+            </div>
+            <div class="about-stats">
+                <div class="stat-item">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-text">Happy Customers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-text">Premium Products</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-text">Customer Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="landingpage.js"></script>
+</body>
+</html>

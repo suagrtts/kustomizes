@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites</title>
+    <link rel="stylesheet" href="homepagestyles.css">
+    <link rel="stylesheet" href="cartstyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .favorites-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .favorite-item {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        .favorite-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .favorite-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .favorite-item:hover img {
+            transform: scale(1.05);
+        }
+        .favorite-item-info {
+            padding: 1.5rem;
+        }
+        .favorite-item h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+        .favorite-item p {
+            margin: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .remove-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+        .remove-btn:hover {
+            background: #b91c1c;
+        }
+        .empty-message {
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 4rem 0;
+            font-size: 1.1rem;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem;
+        }
+        .back-btn:hover {
+            background: #e2e8f0;
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="logo.png" alt="Kustomize"></a>
+        </div>
+        <nav class="nav-links">
+            <a href="homepage.html">Home</a>
+            <a href="cart.html" class="cart-icon">Cart <i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></a>
+            <a href="favorites.html" class="favorites-icon active">Favorites <i class="fas fa-heart"></i><span class="favorites-count">0</span></a>
+            <div class="profile-dropdown">
+                <a href="#" class="profile">Profile <i class="fas fa-user"></i></a>
+                <div class="profile-dropdown-content">
+                    <a href="profile.html" class="profile-dropdown-item">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                    <a href="cart.html" class="profile-dropdown-item">
+                        <i class="fas fa-shopping-bag"></i> My Orders
+                    </a>
+                    <div class="profile-dropdown-divider"></div>
+                    <a href="#" class="profile-dropdown-item logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <button onclick="history.back()" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </button>
+
+    <div class="favorites-container">
+        <h1>Your Favorites</h1>
+        <div id="favorites-grid" class="favorites-grid"></div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="navbarState.js"></script>
+    <script>
+        function checkLoginState() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                localStorage.removeItem('favorites');
+                window.location.replace('login.html');
+                return false;
+            }
+            return true;
+        }
+
+        function loadFavorites() {
+            if (!checkLoginState()) return;
+            
+            const favoritesGrid = document.getElementById('favorites-grid');
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+            if (favorites.length === 0) {
+                favoritesGrid.innerHTML = '<div class="empty-message">No favorites added yet.</div>';
+                return;
+            }
+
+            favoritesGrid.innerHTML = favorites.map((item, index) => `
+                <div class="favorite-item">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="favorite-item-info">
+                        <h3>${item.name}</h3>
+                        <p>₱${item.price.toLocaleString()}</p>
+                        <p>${item.brand} - ${item.style}</p>
+                        <button class="remove-btn" onclick="removeFavorite(${index})">Remove from Favorites</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeFavorite(index) {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            favorites.splice(index, 1);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadFavorites();
+            updateCounts();
+        }
+
+        function updateCounts() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = cartCount;
+            document.querySelector('.favorites-count').textContent = favorites.length;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginState();
+            loadFavorites();
+            updateCounts();
+        });
+    </script>
+</body>
+</html>

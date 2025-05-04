@@ -1,0 +1,12 @@
+{
+  "name": "shoe-store",
+  "version": "1.0.0",
+  "description": "Shoe store website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
